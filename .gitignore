@@ -1,0 +1,42 @@
+# Application output directories
+target/
+output/
+out/
+log/
+gen/
+scripts
+docker/artifacts/
+test/resources/shipyard-version.properties
+
+# VI files
+tags
+.swp
+
+# IntelliJ project files.
+\.idea/
+*.iml
+
+# Mac specific files
+\.DS_Store/
+
+# Vagrant
+\.vagrant/
+
+# Ansible
+\.site.retry
+
+# Terraform
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+terraform.tfplan
+*.tfvars
+remote-state-backend.tf
+environment-*.json
+
+# SSH config/keys
+ssh.conf
+*.pem
+
+# Don't commit custom config files
+shipyard-config.json

@@ -1,0 +1,51 @@
+---
+- set_fact:
+    shipyard_package: "splunkforwarder-{{ splunkforwarder_package_version }}"
+  when: splunkforwarder_package_version is defined
+
+- name: Install splunkforwarder
+  yum:
+    name: "{{ splunkforwarder_package }}"
+    state: present
+    disable_gpg_check: yes
+    enablerepo: "{{ repository }}"
+  become: true
+
+- name: Start splunkforwarder accepting license
+  command: '/opt/splunkforwarder/bin/splunk restart --accept-license'
+  become: true
+
+- name: Enable start on boot
+  command: /opt/splunkforwarder/bin/splunk enable boot-start --accept-license
+  become: true
+
+- name: Configure splunk output
+  template: 
+    src: opt/splunkforwarder/etc/system/local/outputs.conf.j2
+    dest: /opt/splunkforwarder/etc/system/local/outputs.conf
+    mode: 0660
+    owner: splunk
+    group: splunk
+  notify:
+    - restart splunk
+  become: true
+
+- name: Create inputs dir 
+  file:
+    path: /opt/splunkforwarder/etc/apps/search/local
+    state: directory
+    mode: 0755
+    owner: splunk
+    group: splunk
+  become: true
+
+- name: Configure splunk inputs
+  template:
+    src: opt/splunkforwarder/etc/apps/search/local/inputs.conf.j2
+    dest: /opt/splunkforwarder/etc/apps/search/local/inputs.conf
+    mode: 0660
+    owner: splunk
+    group: splunk
+  notify:
+    - restart splunk
+  become: true

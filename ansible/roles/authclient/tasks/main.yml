@@ -1,0 +1,5 @@
+---
+- include: ldap.yml
+  when: auth_scheme == 'ldap'
+- include: idm.yml
+  when: auth_scheme == 'idm'

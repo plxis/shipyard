@@ -1,0 +1,7 @@
+[tcpout]
+defaultGroup = default-autolb-group
+
+[tcpout:default-autolb-group]
+server = {{ splunk_forwarder_server }}:{{ splunk_forwarder_port }}
+
+[tcpout-server://{{ splunk_forwarder_server }}:{{ splunk_forwarder_port }}]

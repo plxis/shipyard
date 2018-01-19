@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  Copyright (c) 2010 Value Pay Services, LLC.  All rights reserved.
+-->
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration debug="false" xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="console" class="org.apache.log4j.ConsoleAppender">
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d{ISO8601}[%t] %-5p %c %x- %m%n" />
+    </layout>
+  </appender>
+  <appender name="rolling" class="org.apache.log4j.RollingFileAppender">
+    <param name="file" value="${SHIPYARD_HOME}/log/shipyard.log" />
+    <param name="MaxFileSize" value="10MB" />
+    <param name="MaxBackupIndex" value="10" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d [%t] %-5p %c %x- %m%n" />
+    </layout>
+  </appender>
+  <appender name="syslog" class="org.apache.log4j.net.SyslogAppender">
+    <param name="SyslogHost" value="loghost" />
+    <param name="Facility" value="LOCAL0" />
+    <param name="FacilityPrinting" value="true" />
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="%d [%t] %-5p %c %x- %m%n" />
+    </layout>
+  </appender>
+
+  <root>
+    <level value="info" />
+    {% if log4j_console_appender  %}
+    <appender-ref ref="console" />
+    {% endif %}
+    <appender-ref ref="rolling" />
+  </root>
+</log4j:configuration>

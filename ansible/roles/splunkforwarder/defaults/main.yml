@@ -1,0 +1,16 @@
+---
+splunkforwarder_package: splunkforwarder
+splunk_forwarder_server: localhost
+splunk_forwarder_port: 9997
+
+# Dictionary of monitor dictionaries:
+#  monitors:
+#    first: 
+#      location: /foo/bar 
+#      sourcetype: type1
+#      disabled: true
+#    second: 
+#      location: /foo/bar 
+#      sourcetype: type2
+#      disabled: false
+monitors: {}

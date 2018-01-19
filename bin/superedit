@@ -1,0 +1,41 @@
+#!/bin/bash
+
+###############################################################################
+# Support simple editing of values via terminal editor. This will call back 
+# into this same script.
+###############################################################################
+if [ $# -lt 2 ]; then
+  echo "usage: $0 -path=<storagepath> -key=<storagekey>"
+  exit 1
+fi
+
+superintendent=$(dirname $0)/superintendent
+
+tmpfile=$(mktemp -t superedit_XXXXX)
+$superintendent read "-file=${tmpfile}" $*
+exitCode=$?
+if [ $exitCode -eq 0 ]; then
+  if [ -z $EDITOR ]; then
+    echo "Default EDITOR environment variable unspecified; using vi"
+    EDITOR=vi
+  fi
+  original=$(cat $tmpfile)
+  $EDITOR $tmpfile
+  exitCode=$?
+  if [ $exitCode -eq 0 ]; then
+    edited=$(cat $tmpfile)
+    if [ "$original" != "$edited" ]; then
+      $superintendent write -file=$tmpfile $*  
+      exitCode=$?
+    else
+      echo "No changes detected"
+    fi
+  else 
+    echo "Editor did not exit cleanly, abandoning changes"
+  fi
+else
+  echo "Unable to read from storage service"
+  cat $tmpfile
+fi
+rm -f $tmpfile
+exit $exitCode

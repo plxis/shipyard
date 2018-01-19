@@ -1,0 +1,4 @@
+
+# auth_scheme is either 'idm' or 'ldap'
+auth_scheme: ldap
+ldap_uri: []

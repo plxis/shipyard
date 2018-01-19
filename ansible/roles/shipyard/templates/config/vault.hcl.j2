@@ -1,0 +1,8 @@
+backend "file" {
+  path = "{{ vault_home }}/{{ vault_backend }}"
+}
+
+listener "tcp" {
+  address = "{{ vault_host }}:{{ vault_port }}"
+  tls_disable = {{ vault_tls_disable }}
+}

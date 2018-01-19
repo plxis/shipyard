@@ -1,0 +1,70 @@
+#!/bin/bash
+# -----------------------------------------------------------------------------
+# Manages the vault server
+# -----------------------------------------------------------------------------
+
+VAULT_CONFIG=${VAULT_CONFIG:-"{{ vault_home }}/config/vault.hcl"}
+VAULT_LOG=${VAULT_LOG:-"{{ vault_home }}/log/vault.log"}
+
+operation=$1
+
+function pid() {
+  pgrep -f "vault server"
+}
+
+function start() {
+  if [[ -z $(pid) ]]; then
+    echo -n "Starting vault server"
+    nohup /usr/local/bin/vault server -config=${VAULT_CONFIG} > ${VAULT_LOG} 2> ${VAULT_LOG} < /dev/null &
+    echo -n " [OK]"; echo ""
+
+    exit 0
+  fi
+
+  echo "Vault server already running"
+}
+
+function stop() {
+  if [[ ! -z $(pid) ]]; then
+    echo -n "Stopping vault server"
+    kill -9 $(pid)
+    echo -n " [OK]"; echo ""
+
+    exit 0
+  fi
+
+  echo "Vault server is not running"
+}
+
+function status() {
+  if [[ ! -z $(pid) ]]; then
+    echo "Vault is running"
+  else
+    echo "Vault is not running"
+  fi
+}
+
+function restart() {
+  stop
+  start
+}
+
+
+# See how we were called.
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    status
+    ;;
+  restart)
+    restart
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|status|restart}"
+    exit 1
+esac

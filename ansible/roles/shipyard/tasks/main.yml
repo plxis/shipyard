@@ -1,0 +1,4 @@
+---
+- include: install-shipyard.yml
+- include: install-vault.yml
+- include: install-terraform.yml

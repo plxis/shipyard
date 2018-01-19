@@ -1,0 +1,26 @@
+[sssd]
+config_file_version = 2
+services = nss, pam
+domains = default
+
+[nss]
+filter_users = root,ldap,named,avahi,haldaemon,dbus,radiusd,news,nscd
+
+[pam]
+
+[domain/default]
+ldap_tls_reqcert = never
+auth_provider = ldap
+ldap_schema = rfc2307bis
+ldap_search_base = dc=dc=net
+ldap_group_member = uniquemember
+id_provider = ldap
+ldap_id_use_start_tls = False
+chpass_provider = ldap
+ldap_uri = {{ ldap_uri | join(', ') }}
+cache_credentials = True
+ldap_tls_cacertdir = /etc/openldap/cacerts
+entry_cache_timeout = 600
+ldap_network_timeout = 3
+ldap_access_filter = (&(objectclass=shadowaccount)(objectclass=posixaccount))
+enumerate = True

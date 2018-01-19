@@ -1,0 +1,7 @@
+[defaults]
+retry_files_enabled = False
+host_key_checking = False
+
+[ssh_connection]
+control_path = /tmp/ans-ssh-%%h-%%p-%%r
+ssh_args = -o PreferredAuthentications={{ ssh_preferred_auths }}

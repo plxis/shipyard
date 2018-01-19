@@ -1,0 +1,28 @@
+# Mandatory properties
+pidFile=superintendent.pid
+storageServiceClass=shipyard.vault.VaultService
+
+###############################################################################
+# Deploy command properties
+envPrefix={{ deploy_env_prefix }}
+externalModuleDir={{ deploy_external_module_dir }}
+cmdTimeout={{ deploy_cmd_timeout }}
+sshUser={{ deploy_ssh_user }}
+
+# Vault properties
+vaultUrl=http://{{ vault_host }}:{{ vault_port }}
+
+# Vault data storage directory, typically will match the Vault backend.file.path property
+vaultDataDir={{ vault_home }}/{{ vault_backend }}
+
+# Vault archive directory where backup ZIP files will be placed
+vaultArchiveDir={{ vault_archive_dir }}
+
+# Maxmimum age of an archived backup ZIP file; files older than this date will be removed
+vaultArchiveMaxAgeInDays={{ vault_archive_max_age_in_days }}
+
+# If the below settings are specified the vault archive will be SCP'd to the remote host
+vaultArchiveRemoteUser={{ vault_archive_remote_user }}
+vaultArchiveRemoteHost={{ vault_archive_remote_host }}
+vaultArchiveRemotePort={{ vault_archive_remote_port }}
+vaultArchiveRemoteDir={{ vault_archive_remote_dir }}

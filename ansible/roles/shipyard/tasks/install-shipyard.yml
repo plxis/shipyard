@@ -1,0 +1,46 @@
+---
+- set_fact:
+    shipyard_package: shipyard-{{ shipyard_package_version }}
+  when: shipyard_package_version is defined
+
+- name: Install dependencies
+  yum:
+    name: epel-release
+    state: present
+  become: true
+  when: epel_enabled
+
+- name: Install shipyard
+  yum:
+    name: "{{ shipyard_package }}"
+    state: latest 
+    disable_gpg_check: yes 
+    enablerepo: "{{ repository }}"
+  when: skip_shipyard is not defined
+  become: true
+
+- name: Configure shipyard
+  template: 
+    owner: shipyard
+    group: shipyard
+    src: opt/shipyard/conf/{{ item }}.j2
+    dest: /opt/shipyard/conf/{{ item }}
+  with_items:
+    - superintendent.properties
+    - log4j.xml
+  become: true
+
+- name: Generate SSH keys
+  shell: ssh-keygen -b 2048 -t rsa -f /home/shipyard/.ssh/id_dsa -q -N ""
+  args:
+    creates: /home/shipyard/.ssh/id_dsa
+  become: true
+  become_user: shipyard
+  
+- name: Configure Ansible
+  template: 
+    owner: shipyard
+    group: shipyard
+    src: home/shipyard/ansible.cfg.j2
+    dest: /home/shipyard/.ansible.cfg
+  become: true

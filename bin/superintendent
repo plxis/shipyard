@@ -1,0 +1,77 @@
+#!/bin/bash
+
+if [ -z "${SHIPYARD_HOME}" ]; then
+    bin=`dirname $0`
+    if [[ "." == $bin ]]; then
+      bin="$PWD"
+    fi
+    SHIPYARD_HOME=`dirname $bin`
+fi
+
+classpath=""
+doDir=""
+otherArgs=""
+
+while [[ $# != 0 ]]; do
+  arg=$1
+  equalPos=`expr "$arg" : "[-a-zA-Z]*="`
+  prompt=${arg:0:$equalPos}
+  value=${arg:$equalPos}
+
+  if [[ $prompt == "-cp=" ]]; then
+    classpath=$value
+  else
+    otherArgs="$otherArgs $arg"
+  fi
+
+  shift
+done
+
+classpath="$classpath:${SHIPYARD_HOME}/conf"
+classpath="$classpath:${SHIPYARD_HOME}/resources/web"
+classpath="$classpath:${SHIPYARD_HOME}/gen/dependencies/jars/*"
+classpath="$classpath:${SHIPYARD_HOME}/gen/classes"
+classpath="$classpath:${SHIPYARD_HOME}/lib/*"
+classpath="$classpath:${SHIPYARD_HOME}/current/conf"
+classpath="$classpath:${SHIPYARD_HOME}/current/resources"
+classpath="$classpath:${SHIPYARD_HOME}/current/resources/web"
+classpath="$classpath:${SHIPYARD_HOME}/current/gen/classes"
+classpath="$classpath:${SHIPYARD_HOME}/current/lib/*"
+
+# Check for dependency jars, retrieve them if necessary
+for f in ${SHIPYARD_HOME}/{gen/dependencies/jars,lib,current/lib}/*.jar; do
+  [ -e "$f" ] && has_jars=1 && break
+done
+if [[ -z ${has_jars} ]]; then
+  if [[ -f "${SHIPYARD_HOME}/build.xml" ]]; then
+    echo "Retrieving dependencies"
+    if ant -f "${SHIPYARD_HOME}/build.xml" retrieve-dependencies; then
+      has_jars=1
+    fi
+  fi
+fi
+if [[ -z ${has_jars} ]]; then
+ echo "ERROR: Missing dependencies and unable to retrieve them"
+fi
+
+
+if [ -n "${SHIPYARD_HEAP_MAX}" ]; then
+  SHIPYARD_JRE_OPTIONS="${SHIPYARD_JRE_OPTIONS} -Xmx${SHIPYARD_HEAP_MAX}"
+fi
+if [ -n "${SHIPYARD_PERMGEN_MAX}" ]; then
+  SHIPYARD_JRE_OPTIONS="${SHIPYARD_JRE_OPTIONS} -XX:MaxPermSize=${SHIPYARD_PERMGEN_MAX}"
+fi
+
+if [ -d "${SHIPYARD_HOME}/jre" ]; then
+  export JAVA_HOME="${SHIPYARD_HOME}/jre"
+elif [ -d "${SHIPYARD_HOME}/current/jre" ]; then
+  export JAVA_HOME="${SHIPYARD_HOME}/current/jre"
+fi
+if [ ! -d "${JAVA_HOME}" ]; then
+  echo "Unable to locate a working JAVA_HOME; exiting."
+  exit 1
+fi
+PATH="${JAVA_HOME}/bin:$PATH"
+
+cmd="java -XX:+CMSClassUnloadingEnabled $SHIPYARD_JRE_OPTIONS -cp $classpath -DSHIPYARD_HOME=${SHIPYARD_HOME} shipyard.Main $otherArgs"
+$cmd

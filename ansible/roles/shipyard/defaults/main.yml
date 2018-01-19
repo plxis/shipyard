@@ -1,0 +1,22 @@
+---
+shipyard_package: shipyard
+log4j_console_appender: false
+terraform_version: 0.11.2
+vault_version: 0.6.4
+vault_home: /opt/vault
+vault_backend: store
+vault_host: 127.0.0.1
+vault_port: 8200
+vault_tls_disable: 1
+vault_archive_dir: /opt/vault/backup
+vault_archive_max_age_in_days: 120
+vault_archive_remote_user:
+vault_archive_remote_host:
+vault_archive_remote_port: 22
+vault_archive_remote_dir:
+deploy_env_prefix: secret/environment/
+deploy_external_module_dir: /opt/shipyard-modules
+deploy_blueprint_dir: current/resources/blueprints
+deploy_cmd_timeout: 7200000
+deploy_ssh_user: 
+ssh_preferred_auths: password,publickey

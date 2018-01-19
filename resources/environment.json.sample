@@ -1,0 +1,18 @@
+{
+  "name": "acme-demo",
+  "description": "Demo environment for ACME product",
+  "version": "1",
+  "repository": "prod",
+  "modules": {
+    "wordpress": {
+      "inventory": {
+        "wordpress-servers": {
+          "hosts": ["web-01", "web-02"],
+          "vars": {
+            "wordpress_package_version": "2.1.200"
+          }
+        }
+      }
+    }
+  }
+}

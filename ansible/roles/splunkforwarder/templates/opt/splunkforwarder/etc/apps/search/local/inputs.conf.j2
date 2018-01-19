@@ -1,0 +1,5 @@
+{% for monitor in monitors %}
+[monitor://{{ monitors[monitor].location }}]
+disabled = {{ monitors[monitor].disabled }}
+sourcetype = {{ monitors[monitor].sourcetype }}
+{% endfor %}

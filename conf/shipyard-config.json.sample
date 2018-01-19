@@ -1,0 +1,30 @@
+{
+  "auth_scheme":"ldap",
+  "ldap_uri": ["ldaps://ldap-01.acme.com","ldaps://ldap-01.acme.com"],
+  "epel_enabled": true,
+  "shipyard_package_version": "1.0.0.55",
+  "monitors": {
+    "vault-audit-log": {
+      "location": "/opt/vault/log/audit.log",
+      "sourcetype": "_json",
+      "disabled": "false"
+    },
+    "vault-server-log": {
+      "location": "/opt/vault/log/vault.log",
+      "sourcetype": "vault",
+      "disabled": "false"
+    },
+    "superintendent-log": {
+      "location": "/opt/shipyard/log/shipyard.log",
+      "sourcetype": "log4j",
+      "disabled": "false"
+    }
+  },
+  "vault_archive_dir": "/opt/vault/backup",
+  "vault_archive_remote_user": "shipyard",
+  "vault_archive_remote_host": "<remote_host>",
+  "vault_archive_remote_port": 22,
+  "vault_archive_remote_dir": "/home/shipyard",
+  "splunk_forwarder_server": "<splunk_host>",
+  "splunk_forwarder_port": 9997
+}

@@ -1,0 +1,14 @@
+---
+- name: Install unzip
+  yum:
+     name: unzip
+     state: latest
+  become: true 
+
+- name: Install Terraform
+  unarchive: 
+    src: "https://releases.hashicorp.com/terraform/{{ terraform_version }}/terraform_{{ terraform_version }}_linux_amd64.zip"
+    dest: /usr/local/bin/
+    remote_src: yes
+    creates: /usr/local/bin/terraform
+  become: true

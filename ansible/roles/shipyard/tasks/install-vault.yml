@@ -1,0 +1,60 @@
+---
+- name: Install unzip
+  yum:
+     name: unzip
+     state: latest
+  become: true 
+
+- name: Install vault
+  unarchive: 
+    src: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+    dest: /usr/local/bin/
+    remote_src: yes
+    creates: /usr/local/bin/vault
+  become: true
+
+- name: Configure storage
+  file: 
+    path: "{{ vault_home }}/{{ item }}"
+    owner: shipyard
+    group: shipyard
+    state: directory
+    mode: u+rwx
+  with_items:
+    - bin
+    - config
+    - log
+    - backup
+    - "{{ vault_backend }}"
+  become: true
+
+- name: Configure vault
+  template:
+    src: config/vault.hcl.j2
+    dest: "{{ vault_home }}/config/vault.hcl"
+    owner: shipyard
+    group: shipyard
+  become: true
+
+- name: Configure mlock
+  capabilities: 
+    path: /usr/local/bin/vault
+    capability: cap_ipc_lock=+ep
+    state: present
+  become: true
+
+- name: Set up vault-ctl
+  template:
+    src: bin/vault-ctl.sh.j2
+    dest: "{{ vault_home }}/bin/vault-ctl.sh"
+    owner: shipyard
+    group: shipyard
+    mode: u+rwx
+  become: true
+
+- name: Add environment variable for vault
+  template:
+    src: etc/profile.d/vault.sh.j2
+    dest: /etc/profile.d/vault.sh
+    mode: u+rwx
+  become: true

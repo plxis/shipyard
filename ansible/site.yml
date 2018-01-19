@@ -1,0 +1,8 @@
+---
+- hosts: all
+  roles:
+    - { role: authclient, when: "skip_authclient is not defined" }
+    - { role: splunkforwarder, when: "skip_splunkforwarder is not defined" }
+    - { role: shipyard }
+  vars_files: 
+    - vars.yml
