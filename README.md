@@ -1,4 +1,4 @@
-# Shipyard
+# shipyard
 
 
 [![Build Status](https://travis-ci.org/plxis/shipyard.svg?branch=master)](https://travis-ci.org/plxis/shipyard)
