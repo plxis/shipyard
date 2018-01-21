@@ -1,5 +1,4 @@
 <project name="shipyard" xmlns:if="ant:if" default="test">
-  <property name="groovy.version" value="2.4.0" />
   <property name="gen" location="gen"/>
   <property name="lib" location="lib"/>
   <property name="conf" location="conf"/>
